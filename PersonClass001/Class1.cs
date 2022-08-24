@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
+﻿using System.Net.Mail;
 namespace PersonClass001
 {
     internal class Person
@@ -13,9 +6,12 @@ namespace PersonClass001
         private string _name;
         private string _email;
         private string _pass;
+
         // If name is null or empty it throws an exception with a custom message. Still results in a crash.
-        public string Name {
-            get { return _name; } set
+        public string Name
+        {
+            get { return _name; }
+            set
             {
                 if (string.IsNullOrEmpty(value))
                 {
@@ -25,23 +21,31 @@ namespace PersonClass001
                 {
                     _name = value;
                 }
-            } }
+            }
+        }
         public DateTime DoB { get; set; }
 
         // Calculates the age and returns it. There is no setter so it is impossible to change this on it's own.
-        public int Age { get
+        public int Age
+        {
+            get
             {
                 int age = DateTime.Today.Year - DoB.Year;
                 if (DateTime.Today < new DateTime(DateTime.Today.Year, DoB.Month, DoB.Day)) age--;
                 return age;
-            }}
-        public string Email { get
+            }
+        }
+        public string Email
+        {
+            get
             {
                 return _email;
-            } set
+            }
+            set
             {
                 _email = MailValidation(value);
-            }}
+            }
+        }
         public string Psw
         {
             get
@@ -57,15 +61,24 @@ namespace PersonClass001
         //Using this method as a setter results in an overflow exception. Not sure why!
         public string MailValidation(string Email)
         {
-            if (MailAddress.TryCreate(Email, out MailAddress? result))
+            string result2 = "";
+            MailAddress? temp;
+            do
             {
-                return result.ToString();
-            }
-            else
-            {
-                return "Email not valid";
-            }
+                if (!MailAddress.TryCreate(Email, out temp))
+                {
+                    Console.WriteLine("Email ikke godkendt. Email skal indeholde @ og .");
+                    Console.Write("Indtast Email: ");
+                    Email = Console.ReadLine();
+                }
+                else
+                {
+                    MailAddress.TryCreate(Email, out temp);
+                    result2 = temp.ToString();
+                }
+            } while (string.IsNullOrEmpty(result2));
 
+            return result2;
         }
         public string ValidatePassword(string psw)
         {
